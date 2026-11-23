@@ -9,6 +9,10 @@
   --or-fonce:#a98032;
   --bordure:#4a3b26;
   --bordure-forte:#8b7038;
+  --couleur-or:#d9b45b;
+  --couleur-vert:#77c49a;
+  --couleur-bleu:#78aee6;
+  --couleur-rose:#e39ab0;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -539,7 +543,15 @@ footer a:hover{color:var(--or)}
 }
 .lecture{max-width:660px;margin:0 auto}
 .lecture-texte{font-size:1.02rem;line-height:1.75}
-.verset{margin:0 0 .7em}
+.verset{
+  position:relative;
+  margin:0 -6px .7em;
+  padding:2px 6px;
+  border-radius:5px;
+  cursor:pointer;
+  transition:background-color .15s ease;
+}
+.verset:hover{background:rgba(217,180,91,.07)}
 .verset-num{
   margin-right:.3em;
   color:var(--or);
@@ -559,6 +571,99 @@ footer a:hover{color:var(--or)}
   from{background:rgba(217,180,91,.42)}
   to{background:rgba(217,180,91,.16)}
 }
+.verset[data-surlignage]{
+  margin-left:-9px;
+  margin-right:-9px;
+  padding:7px 9px;
+  border-radius:5px;
+}
+.verset[data-surlignage].verset-cible{animation:none}
+.verset[data-surlignage="or"]{background:rgba(217,180,91,.22);box-shadow:inset 3px 0 0 var(--couleur-or)}
+.verset[data-surlignage="vert"]{background:rgba(119,196,154,.18);box-shadow:inset 3px 0 0 var(--couleur-vert)}
+.verset[data-surlignage="bleu"]{background:rgba(120,174,230,.18);box-shadow:inset 3px 0 0 var(--couleur-bleu)}
+.verset[data-surlignage="rose"]{background:rgba(227,154,176,.18);box-shadow:inset 3px 0 0 var(--couleur-rose)}
+.verset.surlignage-neuf{animation:surlignage-neuf .55s ease-out}
+@keyframes surlignage-neuf{
+  from{filter:brightness(1.7)}
+  to{filter:brightness(1)}
+}
+.lecture-astuce{
+  margin:0 0 16px;
+  color:var(--doux);
+  font-size:.78rem;
+  text-align:center;
+}
+.palette-surlignage{
+  position:fixed;
+  z-index:80;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  max-width:calc(100vw - 16px);
+  padding:8px 10px;
+  border:1px solid var(--or-fonce);
+  border-radius:9px;
+  background:var(--surface);
+  box-shadow:0 16px 40px -16px #000,0 0 0 1px rgba(217,180,91,.18);
+}
+.palette-label{
+  margin-right:2px;
+  color:var(--doux);
+  font-size:.78rem;
+  white-space:nowrap;
+}
+.palette-couleur{
+  width:24px;
+  height:24px;
+  padding:0;
+  border:2px solid transparent;
+  border-radius:50%;
+  background:var(--swatch);
+  cursor:pointer;
+}
+.palette-couleur:hover,
+.palette-couleur:focus-visible,
+.palette-couleur[aria-pressed="true"]{
+  outline:2px solid var(--or-clair);
+  outline-offset:2px;
+}
+.palette-sep{
+  width:1px;
+  height:22px;
+  background:var(--bordure);
+  margin:0 2px;
+}
+.palette-action{
+  padding:5px 7px;
+  border:0;
+  border-radius:4px;
+  background:transparent;
+  color:var(--or-clair);
+  font:inherit;
+  font-size:.82rem;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.palette-action:hover,
+.palette-action:focus-visible{background:rgba(217,180,91,.14)}
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:26px;
+  z-index:90;
+  padding:10px 16px;
+  border:1px solid var(--or-fonce);
+  border-radius:999px;
+  background:var(--surface-2);
+  color:var(--or-clair);
+  font-size:.88rem;
+  box-shadow:0 12px 30px -10px #000;
+  opacity:0;
+  pointer-events:none;
+  transform:translate(-50%,12px);
+  transition:opacity .18s ease,transform .18s ease;
+}
+.toast.visible{opacity:1;transform:translate(-50%,0)}
 .lecture-vide{
   padding:14px;
   border:1px solid var(--or-fonce);
@@ -604,7 +709,8 @@ footer a:hover{color:var(--or)}
 .nav-bouton:focus-visible,
 .reprise-bouton:focus-visible,
 .verset-jour-ref:focus-visible,
-.verset-resultat:focus-visible{
+.verset-resultat:focus-visible,
+.verset:focus-visible{
   outline:2px solid var(--or-clair);
   outline-offset:2px;
 }

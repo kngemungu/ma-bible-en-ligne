@@ -106,6 +106,10 @@
 
   const CLE_VERSION = "bible.version.v1";
   const CLE_DERNIERE_LECTURE = "bible.derniere-lecture.v1";
+  const CLE_SURLIGNAGES = "bible.surlignages.v1";
+  const COULEURS_SURLIGNAGE = ["or", "vert", "bleu", "rose"];
+  const NOMS_COULEURS = { or: "or", vert: "vert", bleu: "bleu", rose: "rose" };
+  const DUREE_APPUI_LONG = 550;
   const LONGUEUR_MIN_RECHERCHE = 3;
 
   const REFERENCES_VERSET_DU_JOUR = [
@@ -163,6 +167,10 @@
   let indexVersets = [];
   let indexVersion = null;
   let referenceVersetJour = null;
+  let surlignages = lireSurlignages();
+  let paletteOuverte = null;
+  let minuteurAppuiLong = null;
+  let appuiLongDeclenche = false;
 
   /* ---------- Stockage local ---------- */
   function lireStockage(cle) {
@@ -199,6 +207,134 @@
       date: Date.now()
     }));
     mettreAJourReprise();
+  }
+
+  /* ---------- Surlignage et copie des versets ---------- */
+  function cleVerset(livreId, chapitre, verset) {
+    return versionActive + "|" + livreId + "|" + chapitre + "|" + verset;
+  }
+
+  function lireSurlignages() {
+    try {
+      const brut = JSON.parse(lireStockage(CLE_SURLIGNAGES) || "{}");
+      if (!brut || typeof brut !== "object" || Array.isArray(brut)) return {};
+      const propre = {};
+      Object.keys(brut).forEach(cle => {
+        if (COULEURS_SURLIGNAGE.indexOf(brut[cle]) !== -1) propre[cle] = brut[cle];
+      });
+      return propre;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function enregistrerSurlignages() {
+    ecrireStockage(CLE_SURLIGNAGES, JSON.stringify(surlignages));
+  }
+
+  function texteDuVerset(element) {
+    const copie = element.cloneNode(true);
+    const numero = copie.querySelector(".verset-num");
+    if (numero) numero.remove();
+    return copie.textContent.replace(/\s+/g, " ").trim();
+  }
+
+  function afficherToast(message) {
+    let toast = document.getElementById("toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "toast";
+      toast.className = "toast";
+      toast.setAttribute("role", "status");
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add("visible");
+    clearTimeout(toast._minuteur);
+    toast._minuteur = setTimeout(() => toast.classList.remove("visible"), 1900);
+  }
+
+  function copierTexte(texte, bouton, message) {
+    function confirmer() {
+      if (bouton) {
+        const libelle = bouton.textContent;
+        bouton.textContent = message;
+        setTimeout(() => { bouton.textContent = libelle; }, 1600);
+      } else {
+        afficherToast(message);
+      }
+    }
+
+    function copieDeSecours() {
+      const zone = document.createElement("textarea");
+      zone.value = texte;
+      zone.setAttribute("readonly", "");
+      zone.style.position = "fixed";
+      zone.style.opacity = "0";
+      document.body.appendChild(zone);
+      zone.select();
+      let reussi = false;
+      try { reussi = document.execCommand("copy"); } catch (e) { reussi = false; }
+      document.body.removeChild(zone);
+      if (reussi) confirmer();
+      else if (bouton) bouton.textContent = "Copie impossible";
+      else afficherToast("Copie impossible");
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texte).then(confirmer).catch(copieDeSecours);
+    } else {
+      copieDeSecours();
+    }
+  }
+
+  function copierVerset(element) {
+    const livre = PAR_ID.get(element.dataset.livre);
+    if (!livre) return;
+    const chapitre = parseInt(element.dataset.chapitre, 10);
+    const verset = parseInt(element.dataset.verset, 10);
+    const reference = livre.nom + " " + chapitre + ":" + verset;
+    const texte = "« " + texteDuVerset(element) + " » — " + reference +
+      " (" + nomVersion(versionActive) + ")";
+    copierTexte(texte, null, "Verset copié ✓");
+  }
+
+  function fermerPalette() {
+    if (!paletteOuverte) return;
+    paletteOuverte.element.remove();
+    paletteOuverte = null;
+  }
+
+  function ouvrirPalette(verset) {
+    fermerPalette();
+    const actuelle = verset.dataset.surlignage || "";
+    const palette = document.createElement("div");
+    palette.className = "palette-surlignage";
+    palette.setAttribute("role", "group");
+    palette.setAttribute("aria-label", "Couleurs de surlignage");
+    palette.innerHTML =
+      '<span class="palette-label">Surligner</span>' +
+      COULEURS_SURLIGNAGE.map(couleur =>
+        '<button type="button" class="palette-couleur" data-couleur="' + couleur + '"' +
+        ' title="' + NOMS_COULEURS[couleur] + '" aria-label="Surligner en ' + NOMS_COULEURS[couleur] + '"' +
+        ' style="--swatch:var(--couleur-' + couleur + ')"' +
+        (actuelle === couleur ? ' aria-pressed="true"' : '') + '></button>'
+      ).join("") +
+      '<span class="palette-sep"></span>' +
+      '<button type="button" class="palette-action" data-action-palette="copier">Copier</button>' +
+      (actuelle ? '<button type="button" class="palette-action" data-couleur="aucun">Effacer</button>' : '');
+    document.body.appendChild(palette);
+
+    const rect = verset.getBoundingClientRect();
+    const dimensions = palette.getBoundingClientRect();
+    let gauche = rect.left;
+    let haut = rect.bottom + 8;
+    if (haut + dimensions.height > window.innerHeight - 8) haut = rect.top - dimensions.height - 8;
+    gauche = Math.max(8, Math.min(gauche, window.innerWidth - dimensions.width - 8));
+    palette.style.left = Math.max(8, gauche) + "px";
+    palette.style.top = Math.max(8, haut) + "px";
+    paletteOuverte = { element: palette, verset: verset };
+    palette.querySelector("button").focus();
   }
 
   /* ---------- Utilitaires ---------- */
@@ -494,8 +630,12 @@
       contenu = '<div class="lecture-texte">' +
         versets.map((verset, i) => {
           const n = i + 1;
-          const classe = versetCible === n ? ' verset verset-cible' : ' verset';
-          return '<p class="' + classe.trim() + '" id="verset-' + n + '">' +
+          const classes = versetCible === n ? ["verset", "verset-cible"] : ["verset"];
+          const couleur = surlignages[cleVerset(livre.id, numero, n)];
+          return '<p class="' + classes.join(" ") + '" id="verset-' + n + '"' +
+            ' data-livre="' + livre.id + '" data-chapitre="' + numero + '" data-verset="' + n + '"' +
+            (couleur ? ' data-surlignage="' + couleur + '"' : '') +
+            ' tabindex="0" title="Clic : couleur · Clic droit ou appui long : copier">' +
             '<span class="verset-num" aria-hidden="true">' + n + '</span>' +
             echapper(verset) +
           '</p>';
@@ -524,6 +664,7 @@
       '</header>' +
       '<div class="panneau-corps">' +
         '<div class="lecture">' +
+          '<p class="lecture-astuce">Clic sur un verset : choisir une couleur · Clic droit ou appui long : copier.</p>' +
           contenu +
           '<div class="navigation-lecture">' +
             '<button class="nav-bouton" type="button" data-action="precedent"' +
@@ -539,6 +680,7 @@
   }
 
   function afficherVoile(versetCible) {
+    fermerPalette();
     voile.hidden = false;
     document.body.style.overflow = "hidden";
 
@@ -558,6 +700,7 @@
   }
 
   function cacherVoile() {
+    fermerPalette();
     voile.hidden = true;
     document.body.style.overflow = "";
     if (dernierFocus && document.contains(dernierFocus)) {
@@ -567,34 +710,7 @@
   }
 
   function copierLien(bouton) {
-    const lien = location.href;
-
-    function confirmer() {
-      const libelle = bouton.textContent;
-      bouton.textContent = "Lien copié ✓";
-      setTimeout(() => { bouton.textContent = libelle; }, 1600);
-    }
-
-    function copieDeSecours() {
-      const zone = document.createElement("textarea");
-      zone.value = lien;
-      zone.setAttribute("readonly", "");
-      zone.style.position = "fixed";
-      zone.style.opacity = "0";
-      document.body.appendChild(zone);
-      zone.select();
-      let reussi = false;
-      try { reussi = document.execCommand("copy"); } catch (e) { reussi = false; }
-      document.body.removeChild(zone);
-      if (reussi) confirmer();
-      else bouton.textContent = "Copie impossible";
-    }
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(lien).then(confirmer).catch(copieDeSecours);
-    } else {
-      copieDeSecours();
-    }
+    copierTexte(location.href, bouton, "Lien copié ✓");
   }
 
   /* ---------- Routage ---------- */
@@ -684,6 +800,18 @@
   });
 
   panneau.addEventListener("click", function (e) {
+    const verset = e.target.closest(".verset");
+    if (verset) {
+      if (appuiLongDeclenche) {
+        appuiLongDeclenche = false;
+        return;
+      }
+      if (window.getSelection && String(window.getSelection()).trim()) return;
+      e.preventDefault();
+      e.stopPropagation();
+      ouvrirPalette(verset);
+      return;
+    }
     const bouton = e.target.closest("[data-action]");
     if (!bouton) return;
     const action = bouton.dataset.action;
@@ -715,6 +843,75 @@
     }
   });
 
+  panneau.addEventListener("contextmenu", function (e) {
+    const verset = e.target.closest(".verset");
+    if (!verset) return;
+    e.preventDefault();
+    fermerPalette();
+    copierVerset(verset);
+  });
+
+  panneau.addEventListener("pointerdown", function (e) {
+    const verset = e.target.closest(".verset");
+    if (!verset) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    appuiLongDeclenche = false;
+    clearTimeout(minuteurAppuiLong);
+    minuteurAppuiLong = setTimeout(() => {
+      if (window.getSelection && String(window.getSelection()).trim()) return;
+      appuiLongDeclenche = true;
+      fermerPalette();
+      copierVerset(verset);
+    }, DUREE_APPUI_LONG);
+  });
+
+  panneau.addEventListener("pointerup", function () {
+    clearTimeout(minuteurAppuiLong);
+  });
+
+  ["pointercancel", "pointerleave"].forEach(type => {
+    panneau.addEventListener(type, function () {
+      clearTimeout(minuteurAppuiLong);
+      appuiLongDeclenche = false;
+    });
+  });
+
+  panneau.addEventListener("keydown", function (e) {
+    const verset = e.target.closest(".verset");
+    if (!verset) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      ouvrirPalette(verset);
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!paletteOuverte) return;
+    const action = e.target.closest("[data-couleur], [data-action-palette]");
+    if (action && paletteOuverte.element.contains(action)) {
+      e.preventDefault();
+      e.stopPropagation();
+      const verset = paletteOuverte.verset;
+      if (action.dataset.actionPalette === "copier") {
+        copierVerset(verset);
+      } else {
+        const couleur = action.dataset.couleur;
+        const cle = cleVerset(verset.dataset.livre, verset.dataset.chapitre, verset.dataset.verset);
+        if (couleur === "aucun") delete surlignages[cle];
+        else surlignages[cle] = couleur;
+        enregistrerSurlignages();
+        if (couleur === "aucun") verset.removeAttribute("data-surlignage");
+        else verset.setAttribute("data-surlignage", couleur);
+        verset.classList.remove("surlignage-neuf");
+        void verset.offsetWidth;
+        verset.classList.add("surlignage-neuf");
+      }
+      fermerPalette();
+      return;
+    }
+    if (!paletteOuverte.element.contains(e.target)) fermerPalette();
+  });
+
   listeVersets.addEventListener("click", function (e) {
     const bouton = e.target.closest("[data-ouvrir]");
     if (!bouton) return;
@@ -735,6 +932,10 @@
     if (voile.hidden) return;
 
     if (e.key === "Escape") {
+      if (paletteOuverte) {
+        fermerPalette();
+        return;
+      }
       fermerPanneau();
       return;
     }

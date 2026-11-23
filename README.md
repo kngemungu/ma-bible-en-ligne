@@ -14,6 +14,7 @@ La version choisie et la dernière lecture sont mémorisées dans le `localStora
 - Deux versions complètes : **Louis Segond 1910** (français) et **King James Version** (anglais).
 - Navigation par livre puis par chapitre, avec chapitres précédent/suivant.
 - Lien direct vers un chapitre ou un verset : `#/livre/jean/3/16`.
+- Clic sur un verset : palette de surlignage (or, vert, bleu, rose) mémorisée localement ; clic droit ou appui long pour copier le verset avec sa référence.
 - Recherche par nom de livre et recherche plein texte dans les versets de la version active.
 - Verset du jour, reprise de la dernière lecture, copie du lien de lecture.
 - Interface responsive, navigation au clavier (← / → dans un chapitre, Échap pour fermer).
