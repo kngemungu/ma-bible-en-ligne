@@ -1,0 +1,11 @@
+# Autres projets présents dans le dossier (à versionner séparément)
+/billeterie/
+/plateforme-revision/
+
+# Fichiers Python générés
+__pycache__/
+*.py[cod]
+
+# Fichiers système
+Thumbs.db
+.DS_Store

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lisez la Bible gratuitement en français (Louis Segond 1910) et en anglais (King James Version). Recherche par livre ou par mot, navigation par chapitre et verset du jour.">
+  <title>Ma Bible en ligne — Louis Segond & King James</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="enveloppe">
+  <header class="intro">
+    <div class="intro-haut">
+      <div class="intro-titres">
+        <p class="intro-marque">Ma Bible en ligne</p>
+        <h1>Lire, méditer, revenir à l’essentiel.</h1>
+        <p class="intro-accroche">Bienvenue dans mon espace de lecture biblique.</p>
+      </div>
+      <aside class="reprise" id="reprise" hidden>
+        <span class="reprise-label">Reprendre la lecture</span>
+        <strong class="reprise-titre" id="reprise-titre"></strong>
+        <span class="reprise-detail" id="reprise-detail"></span>
+        <button class="reprise-bouton" id="reprise-bouton" type="button">Continuer →</button>
+      </aside>
+    </div>
+
+    <p>Ce site est le premier prototype d’un long projet : un réseau social 100&nbsp;% chrétien que j’ai l’idée de faire.</p>
+    <p>En attendant, ce site vous permettra de lire gratuitement la Bible avec des explications et des méditations. Deux versions sont disponibles :</p>
+    <ul class="versions">
+      <li>Louis Segond 1910</li>
+      <li>King James Version</li>
+    </ul>
+
+    <section class="verset-jour" id="verset-jour" aria-labelledby="titre-verset-jour">
+      <div class="verset-jour-haut">
+        <span class="verset-jour-titre" id="titre-verset-jour">Verset du jour</span>
+        <span class="verset-jour-theme" id="theme-verset-jour"></span>
+      </div>
+      <blockquote class="verset-jour-texte" id="texte-verset-jour"></blockquote>
+      <button class="verset-jour-ref" id="ref-verset-jour" type="button"></button>
+    </section>
+  </header>
+
+  <main class="explorateur">
+    <div class="entete-explorateur">
+      <div>
+        <h2 id="titre-livres">Choisis un livre de la Bible</h2>
+        <p class="sous-titre">Parcourez l’Ancien et le Nouveau Testament, puis sélectionnez un chapitre.</p>
+      </div>
+      <label class="choix-version">
+        <span>Version</span>
+        <select id="version">
+          <option value="LSG">Louis Segond</option>
+          <option value="KJV">King James</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="barre">
+      <div class="champ-recherche">
+        <input id="recherche" type="search" placeholder="Rechercher un livre ou un mot dans la Bible…"
+               autocomplete="off" aria-label="Rechercher un livre ou un mot dans la Bible">
+      </div>
+      <div class="filtres" role="group" aria-label="Filtrer par testament">
+        <button class="filtre" type="button" data-testament="TOUT" aria-pressed="true">Tous</button>
+        <button class="filtre" type="button" data-testament="AT" aria-pressed="false">Ancien Testament</button>
+        <button class="filtre" type="button" data-testament="NT" aria-pressed="false">Nouveau Testament</button>
+      </div>
+    </div>
+
+    <p class="compteur" id="compteur" aria-live="polite"></p>
+
+    <section class="testament" data-testament="AT" aria-labelledby="titre-at">
+      <div class="entete-testament">
+        <h2 id="titre-at">Ancien Testament</h2>
+        <span>39 livres</span>
+      </div>
+      <div id="zone-at"></div>
+    </section>
+
+    <section class="testament" data-testament="NT" aria-labelledby="titre-nt">
+      <div class="entete-testament">
+        <h2 id="titre-nt">Nouveau Testament</h2>
+        <span>27 livres</span>
+      </div>
+      <div id="zone-nt"></div>
+    </section>
+
+    <section class="resultats-versets" id="resultats-versets" aria-labelledby="titre-resultats-versets" aria-live="polite" hidden>
+      <div class="resultats-entete">
+        <h2 id="titre-resultats-versets">Versets trouvés</h2>
+        <span id="compteur-versets"></span>
+      </div>
+      <div class="liste-versets" id="liste-versets"></div>
+    </section>
+
+    <div class="vide" id="vide">
+      <h3>Aucun résultat trouvé</h3>
+      <p>Essayez un autre mot, un autre nom de livre, ou choisissez « Tous » pour réafficher les 66 livres.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>Ma Bible en ligne</strong> — Louis Segond 1910 et King James Version.</p>
+    <p class="footer-note">Textes bibliques du domaine public, issus de <a href="https://bible.helloao.org" target="_blank" rel="noopener noreferrer">Bible.helloao.org</a>. Prototype de lecture et de méditation.</p>
+  </footer>
+</div>
+
+<div class="voile" id="voile" hidden>
+  <div class="panneau" id="panneau" role="dialog" aria-modal="true" aria-labelledby="panneau-titre" tabindex="-1"></div>
+</div>
+
+<script src="bible-LSG.js"></script>
+<script src="bible-KJV.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
