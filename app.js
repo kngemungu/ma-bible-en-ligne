@@ -330,6 +330,7 @@
     let gauche = rect.left;
     let haut = rect.bottom + 8;
     if (haut + dimensions.height > window.innerHeight - 8) haut = rect.top - dimensions.height - 8;
+    haut = Math.max(8, Math.min(haut, window.innerHeight - dimensions.height - 8));
     gauche = Math.max(8, Math.min(gauche, window.innerWidth - dimensions.width - 8));
     palette.style.left = Math.max(8, gauche) + "px";
     palette.style.top = Math.max(8, haut) + "px";
@@ -690,6 +691,7 @@
     if (versetCible && corps) {
       const cible = panneau.querySelector("#verset-" + versetCible);
       if (cible) {
+        cible.scrollIntoView({ block: "center" });
         requestAnimationFrame(() => {
           cible.scrollIntoView({ block: "center" });
         });
