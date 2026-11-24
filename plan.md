@@ -77,7 +77,7 @@ Le site est entièrement statique (HTML/CSS/JS), sans serveur ni installation. L
 
 | Sujet | Choix retenu |
 | --- | --- |
-| Hébergement | Aucun : fichiers statiques, ouvrables en double-cliquant sur `Index.html` |
+| Hébergement | GitHub Pages : fichiers statiques, ouvrables en double-cliquant sur `index.html` ou en ligne sur https://kngemungu.github.io/ma-bible-en-ligne/ |
 | Données utilisateur | `localStorage` : `bible.version.v1`, `bible.derniere-lecture.v1` |
 | Contenu | `bible-LSG.js` et `bible-KJV.js`, générés par `scripts/generer-bibles.py` |
 | Logique | `app.js` (routage par hash, rendu, recherche, stockage local) |

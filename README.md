@@ -4,7 +4,7 @@ Prototype de lecteur biblique : parcourir les 66 livres, lire un chapitre, reche
 
 ## Lancer le site
 
-Ouvrez `Index.html` dans un navigateur. Aucune installation et aucun serveur ne sont nécessaires.
+Ouvrez `index.html` dans un navigateur. Aucune installation et aucun serveur ne sont nécessaires.
 
 La version choisie et la dernière lecture sont mémorisées dans le `localStorage` du navigateur.
 
@@ -23,7 +23,7 @@ La version choisie et la dernière lecture sont mémorisées dans le `localStora
 
 | Fichier | Rôle |
 | --- | --- |
-| `Index.html` | Structure de la page |
+| `index.html` | Structure de la page |
 | `style.css` | Thème sombre doré, composants et responsive |
 | `app.js` | Routage, rendu, recherche, verset du jour et stockage local |
 | `bible-LSG.js` | Texte Louis Segond 1910 généré (66 livres) |
