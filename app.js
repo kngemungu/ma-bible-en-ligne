@@ -107,6 +107,7 @@
   const CLE_VERSION = "bible.version.v1";
   const CLE_DERNIERE_LECTURE = "bible.derniere-lecture.v1";
   const CLE_SURLIGNAGES = "bible.surlignages.v1";
+  const CLE_THEME = "bible.theme.v1";
   const COULEURS_SURLIGNAGE = ["or", "vert", "bleu", "rose"];
   const NOMS_COULEURS = { or: "or", vert: "vert", bleu: "bleu", rose: "rose" };
   const DUREE_APPUI_LONG = 550;
@@ -159,6 +160,7 @@
   const zoneVersetJour = document.getElementById("verset-jour");
   const boutonRefVersetJour = document.getElementById("ref-verset-jour");
   const boutonReprise = document.getElementById("reprise-bouton");
+  const boutonTheme = document.getElementById("bouton-theme");
 
   let testamentActif = "TOUT";
   let versionActive = "LSG";
@@ -179,6 +181,14 @@
 
   function ecrireStockage(cle, valeur) {
     try { localStorage.setItem(cle, valeur); } catch (e) { /* stockage indisponible */ }
+  }
+
+  function appliquerTheme(theme) {
+    const actif = theme === "clair" ? "clair" : "sombre";
+    document.documentElement.dataset.theme = actif;
+    boutonTheme.textContent = actif === "clair" ? "Mode sombre" : "Mode clair";
+    boutonTheme.setAttribute("aria-pressed", actif === "clair" ? "true" : "false");
+    boutonTheme.setAttribute("aria-label", actif === "clair" ? "Passer au thème sombre" : "Passer au thème clair");
   }
 
   function lireDerniereLecture() {
@@ -770,6 +780,12 @@
   }
 
   /* ---------- Événements ---------- */
+  boutonTheme.addEventListener("click", function () {
+    const suivant = document.documentElement.dataset.theme === "clair" ? "sombre" : "clair";
+    appliquerTheme(suivant);
+    ecrireStockage(CLE_THEME, suivant);
+  });
+
   champRecherche.addEventListener("input", function () {
     clearTimeout(minuteurFiltres);
     minuteurFiltres = setTimeout(appliquerFiltres, 120);
@@ -984,6 +1000,7 @@
   const versionEnregistree = lireStockage(CLE_VERSION);
   if (VERSIONS[versionEnregistree]) versionActive = versionEnregistree;
   selectionVersion.value = versionActive;
+  appliquerTheme(lireStockage(CLE_THEME) === "clair" ? "clair" : "sombre");
 
   construireGrille();
   rendreVersetDuJour();

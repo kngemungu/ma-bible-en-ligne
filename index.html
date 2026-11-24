@@ -3,10 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <script>
+    try {
+      var themeEnregistre = localStorage.getItem("bible.theme.v1");
+      if (themeEnregistre === "clair" || themeEnregistre === "sombre") {
+        document.documentElement.dataset.theme = themeEnregistre;
+      }
+    } catch (e) { /* stockage indisponible */ }
+  </script>
   <meta name="description" content="Lisez la Bible gratuitement en français (Louis Segond 1910) et en anglais (King James Version). Recherche par livre ou par mot, navigation par chapitre et verset du jour.">
   <title>Ma Bible en ligne — Louis Segond & King James</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <div class="enveloppe">
@@ -17,6 +25,7 @@
         <h1>Lire, méditer, revenir à l’essentiel.</h1>
         <p class="intro-accroche">Bienvenue dans mon espace de lecture biblique.</p>
       </div>
+      <button class="bouton-theme" id="bouton-theme" type="button" aria-pressed="false">Mode clair</button>
       <aside class="reprise" id="reprise" hidden>
         <span class="reprise-label">Reprendre la lecture</span>
         <strong class="reprise-titre" id="reprise-titre"></strong>
@@ -124,6 +133,6 @@
 
 <script src="bible-LSG.js"></script>
 <script src="bible-KJV.js"></script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>
