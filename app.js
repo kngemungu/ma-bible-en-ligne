@@ -108,6 +108,7 @@
   const CLE_DERNIERE_LECTURE = "bible.derniere-lecture.v1";
   const CLE_SURLIGNAGES = "bible.surlignages.v1";
   const CLE_THEME = "bible.theme.v1";
+  const CLE_TAILLE_TEXTE = "bible.taille-lecture.v1";
   const COULEURS_SURLIGNAGE = ["or", "vert", "bleu", "rose"];
   const NOMS_COULEURS = { or: "or", vert: "vert", bleu: "bleu", rose: "rose" };
   const DUREE_APPUI_LONG = 550;
@@ -173,6 +174,7 @@
   let paletteOuverte = null;
   let minuteurAppuiLong = null;
   let appuiLongDeclenche = false;
+  let tailleTexte = 1;
 
   /* ---------- Stockage local ---------- */
   function lireStockage(cle) {
@@ -189,6 +191,11 @@
     boutonTheme.textContent = actif === "clair" ? "Mode sombre" : "Mode clair";
     boutonTheme.setAttribute("aria-pressed", actif === "clair" ? "true" : "false");
     boutonTheme.setAttribute("aria-label", actif === "clair" ? "Passer au thème sombre" : "Passer au thème clair");
+  }
+
+  function appliquerTailleTexte(valeur) {
+    tailleTexte = Math.min(1.5, Math.max(0.9, Math.round(valeur * 10) / 10));
+    document.documentElement.style.setProperty("--taille-lecture", tailleTexte);
   }
 
   function lireDerniereLecture() {
@@ -669,6 +676,10 @@
             echapper(nom) + '.</p>' +
         '</div>' +
         '<div class="panneau-actions">' +
+          '<div class="controle-taille" role="group" aria-label="Taille du texte">' +
+            '<button class="bouton-taille" type="button" data-action="texte-moins" aria-label="Réduire la taille du texte">A−</button>' +
+            '<button class="bouton-taille" type="button" data-action="texte-plus" aria-label="Agrandir la taille du texte">A+</button>' +
+          '</div>' +
           '<button class="bouton-panneau" type="button" data-action="copier">Copier le lien</button>' +
           '<button class="bouton-panneau" type="button" data-action="fermer">Fermer</button>' +
         '</div>' +
@@ -786,6 +797,30 @@
     ecrireStockage(CLE_THEME, suivant);
   });
 
+  document.querySelector(".navigation-basse").addEventListener("click", function (e) {
+    const bouton = e.target.closest("[data-bas]");
+    if (!bouton) return;
+    const action = bouton.dataset.bas;
+    const executer = () => {
+      if (action === "accueil") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else if (action === "recherche") {
+        champRecherche.focus();
+        champRecherche.scrollIntoView({ block: "center", behavior: "smooth" });
+      } else if (action === "verset") {
+        zoneVersetJour.scrollIntoView({ block: "center", behavior: "smooth" });
+      } else if (action === "theme") {
+        boutonTheme.click();
+      }
+    };
+    if (!voile.hidden) {
+      fermerPanneau();
+      setTimeout(executer, 60);
+    } else {
+      executer();
+    }
+  });
+
   champRecherche.addEventListener("input", function () {
     clearTimeout(minuteurFiltres);
     minuteurFiltres = setTimeout(appliquerFiltres, 120);
@@ -858,6 +893,13 @@
       case "copier":
         copierLien(bouton);
         break;
+      case "texte-moins":
+      case "texte-plus": {
+        const delta = action === "texte-plus" ? 0.1 : -0.1;
+        appliquerTailleTexte(tailleTexte + delta);
+        ecrireStockage(CLE_TAILLE_TEXTE, String(tailleTexte));
+        break;
+      }
     }
   });
 
@@ -1001,6 +1043,8 @@
   if (VERSIONS[versionEnregistree]) versionActive = versionEnregistree;
   selectionVersion.value = versionActive;
   appliquerTheme(lireStockage(CLE_THEME) === "clair" ? "clair" : "sombre");
+  const tailleEnregistree = parseFloat(lireStockage(CLE_TAILLE_TEXTE));
+  appliquerTailleTexte(Number.isFinite(tailleEnregistree) ? tailleEnregistree : 1);
 
   construireGrille();
   rendreVersetDuJour();
