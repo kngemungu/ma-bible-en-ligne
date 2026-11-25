@@ -223,7 +223,7 @@ body{
 /* Verset du jour */
 .verset-jour{
   position:relative;
-  margin:22px 0 0;
+  margin:0 0 26px;
   padding:16px 18px 14px 50px;
   border:1px solid var(--bordure-forte);
   border-radius:var(--rayon);
@@ -914,17 +914,25 @@ footer a:hover{color:var(--or)}
     cursor:pointer;
   }
   .navigation-basse button:active{background:var(--accent-moyen);color:var(--or-clair)}
-  .enveloppe{padding:18px 14px calc(86px + env(safe-area-inset-bottom))}
-  .intro{padding:20px 16px;margin-bottom:26px}
-  .intro h1{font-size:1.55rem;line-height:1.25}
-  .intro .intro-accroche{font-size:.96rem}
-  .intro p{font-size:.95rem}
-  .intro-haut{flex-direction:column;gap:14px}
+  .enveloppe{
+    display:flex;
+    flex-direction:column;
+    padding:18px 14px calc(86px + env(safe-area-inset-bottom));
+  }
+  .explorateur{order:1}
+  .intro{order:2;padding:16px 14px;margin-bottom:18px}
+  .verset-jour{order:3;margin:0 0 20px;padding:14px 14px 12px 40px}
+  footer{order:4}
+  .intro h1{font-size:1.45rem;line-height:1.25}
+  .intro .intro-accroche{font-size:.9rem}
+  .intro p{font-size:.9rem;line-height:1.5;margin-bottom:8px}
+  .versions{margin-top:8px}
+  .intro-haut{flex-direction:column;gap:12px}
+  .intro-titres{flex:1 1 auto}
   .bouton-theme{min-height:44px;align-self:flex-start}
   .bouton-taille{min-width:44px;min-height:44px}
   .reprise{flex-basis:auto;width:100%}
   .reprise-bouton{min-height:44px}
-  .verset-jour{margin-top:18px;padding:14px 14px 12px 40px}
   .verset-jour::before{left:8px;top:2px;font-size:2.4rem}
   .verset-jour-ref{min-height:44px;display:inline-flex;align-items:center}
   .resultats-versets{padding:12px}

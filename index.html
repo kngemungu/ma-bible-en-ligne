@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <script>
     try {
@@ -14,7 +17,7 @@
   <meta name="description" content="Lisez la Bible gratuitement en français (Louis Segond 1910) et en anglais (King James Version). Recherche par livre ou par mot, navigation par chapitre et verset du jour.">
   <title>Ma Bible en ligne — Louis Segond & King James</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
 <div class="enveloppe">
@@ -40,16 +43,16 @@
       <li>Louis Segond 1910</li>
       <li>King James Version</li>
     </ul>
-
-    <section class="verset-jour" id="verset-jour" aria-labelledby="titre-verset-jour">
-      <div class="verset-jour-haut">
-        <span class="verset-jour-titre" id="titre-verset-jour">Verset du jour</span>
-        <span class="verset-jour-theme" id="theme-verset-jour"></span>
-      </div>
-      <blockquote class="verset-jour-texte" id="texte-verset-jour"></blockquote>
-      <button class="verset-jour-ref" id="ref-verset-jour" type="button"></button>
-    </section>
   </header>
+
+  <section class="verset-jour" id="verset-jour" aria-labelledby="titre-verset-jour">
+    <div class="verset-jour-haut">
+      <span class="verset-jour-titre" id="titre-verset-jour">Verset du jour</span>
+      <span class="verset-jour-theme" id="theme-verset-jour"></span>
+    </div>
+    <blockquote class="verset-jour-texte" id="texte-verset-jour"></blockquote>
+    <button class="verset-jour-ref" id="ref-verset-jour" type="button"></button>
+  </section>
 
   <main class="explorateur">
     <div class="entete-explorateur">
@@ -140,6 +143,6 @@
 
 <script src="bible-LSG.js"></script>
 <script src="bible-KJV.js"></script>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>
