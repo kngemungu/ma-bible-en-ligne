@@ -17,7 +17,7 @@
   <meta name="description" content="Lisez la Bible gratuitement en français (Louis Segond 1910) et en anglais (King James Version). Recherche par livre ou par mot, navigation par chapitre et verset du jour.">
   <title>Ma Bible en ligne — Louis Segond & King James</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 <div class="enveloppe">
@@ -37,12 +37,15 @@
       </aside>
     </div>
 
-    <p>Ce site est le premier prototype d’un long projet : un réseau social 100&nbsp;% chrétien que j’ai l’idée de faire.</p>
-    <p>En attendant, ce site vous permet de lire gratuitement la Bible. Les explications et les méditations arrivent bientôt. Deux versions sont disponibles :</p>
-    <ul class="versions">
-      <li>Louis Segond 1910</li>
-      <li>King James Version</li>
-    </ul>
+    <details class="intro-details" open>
+      <summary>À propos du site</summary>
+      <p>Ce site est le premier prototype d’un long projet : un réseau social 100&nbsp;% chrétien que j’ai l’idée de faire.</p>
+      <p>En attendant, ce site vous permet de lire gratuitement la Bible. Les explications et les méditations arrivent bientôt. Deux versions sont disponibles :</p>
+      <ul class="versions">
+        <li>Louis Segond 1910</li>
+        <li>King James Version</li>
+      </ul>
+    </details>
   </header>
 
   <section class="verset-jour" id="verset-jour" aria-labelledby="titre-verset-jour">
@@ -143,6 +146,6 @@
 
 <script src="bible-LSG.js"></script>
 <script src="bible-KJV.js"></script>
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>

@@ -212,6 +212,22 @@ body{
   border-color:var(--or-clair);
   color:var(--texte-bouton);
 }
+.intro-details{margin-top:14px}
+.intro-details summary{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:32px;
+  color:var(--or-clair);
+  font-size:.85rem;
+  font-weight:700;
+  list-style:none;
+  cursor:pointer;
+}
+.intro-details summary::-webkit-details-marker{display:none}
+.intro-details summary::after{content:"▾";font-size:.8rem}
+.intro-details[open] summary::after{content:"▴"}
+.intro-details[open]{margin-bottom:12px}
 .versions{
   margin:18px 0 0;
   padding-left:22px;
@@ -875,6 +891,7 @@ footer a:hover{color:var(--or)}
 .nav-bouton:focus-visible,
 .reprise-bouton:focus-visible,
 .bouton-theme:focus-visible,
+.intro-details summary:focus-visible,
 .bouton-taille:focus-visible,
 .navigation-basse button:focus-visible,
 .verset-jour-ref:focus-visible,
@@ -919,15 +936,16 @@ footer a:hover{color:var(--or)}
     flex-direction:column;
     padding:18px 14px calc(86px + env(safe-area-inset-bottom));
   }
-  .explorateur{order:1}
-  .intro{order:2;padding:16px 14px;margin-bottom:18px}
+  .intro{order:1;padding:16px 14px;margin-bottom:16px}
+  .explorateur{order:2}
   .verset-jour{order:3;margin:0 0 20px;padding:14px 14px 12px 40px}
   footer{order:4}
-  .intro h1{font-size:1.45rem;line-height:1.25}
-  .intro .intro-accroche{font-size:.9rem}
-  .intro p{font-size:.9rem;line-height:1.5;margin-bottom:8px}
-  .versions{margin-top:8px}
-  .intro-haut{flex-direction:column;gap:12px}
+  .intro h1{font-size:1.25rem;line-height:1.25}
+  .intro-marque,.intro-accroche,.entete-explorateur .sous-titre{display:none}
+  .intro p{font-size:.88rem;line-height:1.45;margin-bottom:6px}
+  .intro-details{margin-top:10px}
+  .versions{margin-top:6px}
+  .intro-haut{flex-direction:column;gap:10px}
   .intro-titres{flex:1 1 auto}
   .bouton-theme{min-height:44px;align-self:flex-start}
   .bouton-taille{min-width:44px;min-height:44px}
@@ -937,17 +955,24 @@ footer a:hover{color:var(--or)}
   .verset-jour-ref{min-height:44px;display:inline-flex;align-items:center}
   .resultats-versets{padding:12px}
   .liste-versets{max-height:320px}
-  .entete-explorateur{flex-direction:column;align-items:stretch;gap:12px}
-  .entete-explorateur h2{font-size:1.25rem}
-  .choix-version{width:100%}
+  .entete-explorateur{
+    flex-direction:row;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px 12px;
+    margin-bottom:10px;
+  }
+  .entete-explorateur h2{font-size:1.15rem}
+  .entete-explorateur .sous-titre{font-size:.82rem;line-height:1.4}
+  .choix-version{width:auto;flex:1 1 130px}
   /* 16 px minimum : évite le zoom automatique de Safari à la saisie */
   #version{width:100%;min-height:44px;font-size:16px}
-  .barre{padding:10px;gap:10px}
+  .barre{padding:10px;gap:10px;margin-bottom:10px}
   .champ-recherche{flex:1 1 100%}
   #recherche{min-height:44px;font-size:16px}
   .filtres{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
   .filtre{min-height:44px;padding:8px 4px;font-size:.85rem}
-  .compteur{margin-bottom:18px}
+  .compteur{margin:4px 0 10px;font-size:.82rem}
   .testament{margin-bottom:28px}
   .entete-testament span{white-space:normal;text-align:right}
   .liste-livres{gap:6px}

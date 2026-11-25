@@ -162,6 +162,7 @@
   const boutonRefVersetJour = document.getElementById("ref-verset-jour");
   const boutonReprise = document.getElementById("reprise-bouton");
   const boutonTheme = document.getElementById("bouton-theme");
+  const detailsIntro = document.querySelector(".intro-details");
 
   let testamentActif = "TOUT";
   let versionActive = "LSG";
@@ -1048,6 +1049,17 @@
   appliquerTheme(lireStockage(CLE_THEME) === "clair" ? "clair" : "sombre");
   const tailleEnregistree = parseFloat(lireStockage(CLE_TAILLE_TEXTE));
   appliquerTailleTexte(Number.isFinite(tailleEnregistree) ? tailleEnregistree : 1);
+
+  /* Sur téléphone, l'introduction reste en haut mais se replie pour laisser les livres visibles. */
+  const requeteMobile = window.matchMedia("(max-width:620px)");
+  const ajusterDetailsIntro = () => {
+    if (!detailsIntro) return;
+    if (requeteMobile.matches) detailsIntro.removeAttribute("open");
+    else detailsIntro.setAttribute("open", "");
+  };
+  ajusterDetailsIntro();
+  if (requeteMobile.addEventListener) requeteMobile.addEventListener("change", ajusterDetailsIntro);
+  else if (requeteMobile.addListener) requeteMobile.addListener(ajusterDetailsIntro);
 
   construireGrille();
   rendreVersetDuJour();
