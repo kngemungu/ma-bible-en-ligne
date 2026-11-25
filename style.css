@@ -477,15 +477,18 @@ body{
   font-weight:700;
   color:var(--doux);
 }
-.grille{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
-  gap:8px;
+.liste-livres{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
 }
 .carte{
-  display:block;
+  display:flex;
+  align-items:center;
+  gap:10px;
   width:100%;
-  padding:10px 12px;
+  min-height:46px;
+  padding:8px 12px;
   background:linear-gradient(180deg,var(--surface),var(--carte-fin));
   border:1px solid var(--bordure);
   border-left:3px solid var(--or);
@@ -494,6 +497,15 @@ body{
   text-align:left;
   font:inherit;
   cursor:pointer;
+}
+.carte::before{
+  content:attr(data-numero);
+  flex:0 0 26px;
+  color:var(--doux);
+  font-size:.75rem;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  text-align:right;
 }
 .carte[data-testament="NT"]{border-left-color:var(--or-clair)}
 .carte:hover{
@@ -504,17 +516,18 @@ body{
     0 8px 22px -14px var(--ombre-legere);
 }
 .carte-nom{
-  display:block;
+  flex:1 1 auto;
+  min-width:0;
   font-weight:700;
   font-size:.96rem;
   line-height:1.3;
   color:var(--or-clair);
 }
 .carte-meta{
-  display:block;
-  margin-top:2px;
+  flex:0 0 auto;
   color:var(--doux);
-  font-size:.82rem;
+  font-size:.8rem;
+  white-space:nowrap;
 }
 .vide{
   display:none;
@@ -929,8 +942,8 @@ footer a:hover{color:var(--or)}
   .compteur{margin-bottom:18px}
   .testament{margin-bottom:28px}
   .entete-testament span{white-space:normal;text-align:right}
-  .grille{grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:8px}
-  .carte{min-height:58px;padding:10px}
+  .liste-livres{gap:6px}
+  .carte{min-height:48px;padding:8px 10px}
   .carte-nom{font-size:.92rem;overflow-wrap:break-word}
   .carte-meta{font-size:.78rem}
   /* Lecteur : plein écran sur téléphone */
@@ -988,13 +1001,13 @@ footer a:hover{color:var(--or)}
   .enveloppe{padding-left:12px;padding-right:12px}
   .intro{padding:16px 14px}
   .intro h1{font-size:1.42rem}
-  .grille{grid-template-columns:repeat(auto-fill,minmax(126px,1fr))}
+  .carte-meta{font-size:.75rem}
   .filtre{font-size:.8rem}
   .palette-couleur{width:42px;height:42px}
 }
 
 @media (max-width:360px){
-  .grille{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .carte::before{flex-basis:22px}
   .filtres{grid-template-columns:1fr 1fr}
   .grille-chapitres{grid-template-columns:repeat(auto-fill,minmax(42px,1fr))}
 }

@@ -400,6 +400,7 @@
   }
 
   function construireGrille() {
+    let numeroLivre = 1;
     CATEGORIES.forEach(cat => {
       const zone = document.getElementById(cat.testament === "AT" ? "zone-at" : "zone-nt");
       const section = document.createElement("section");
@@ -411,12 +412,14 @@
       titre.textContent = cat.titre;
       section.appendChild(titre);
 
-      const grille = document.createElement("div");
-      grille.className = "grille";
+      const liste = document.createElement("div");
+      liste.className = "liste-livres";
       cat.livres.forEach(([id]) => {
-        grille.appendChild(construireCarte(PAR_ID.get(id)));
+        const carte = construireCarte(PAR_ID.get(id));
+        carte.dataset.numero = String(numeroLivre++).padStart(2, "0");
+        liste.appendChild(carte);
       });
-      section.appendChild(grille);
+      section.appendChild(liste);
       zone.appendChild(section);
     });
   }
